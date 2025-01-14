@@ -16,6 +16,7 @@ import Dashboard from './pages/dashboard/Dashboard'
 import Settings from './pages/dashboard/Settings'
 import "../public/css/style.css"
 import Recruitment from './pages/recruitment/Recruitment'
+import BillingSummary from './pages/appointment/payment/BillingSummary'
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             <Route path='/appointment/frequency' element={<Frequency />} />
             <Route path='/appointment/requirement' element={<Requirement />} />
             <Route path='/appointment/details' element={<Details />} />
+            <Route path='/appointment/billing' element={<BillingSummary/>}/>
             <Route path='/appointment/complete' element={<Complete />} />
           </Route>
 

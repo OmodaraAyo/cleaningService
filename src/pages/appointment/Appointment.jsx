@@ -18,7 +18,7 @@ const Appointment = () => {
     if(!payload.email || !payload.post_code){
       return null;
     }
-    return navigate("/appointment/frequency")
+    return navigate("/appointment/frequency", {state: {post_code: payload.post_code}})
   }
 
   return (

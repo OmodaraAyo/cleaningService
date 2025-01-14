@@ -1,31 +1,37 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 import "../appointment.css";
-import SelectInput from '../components/Select';
-import Input from '../components/Input';
-import { BookingContext } from '../../../context/BookingContext';
-import { Link, useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { bookingApi, getAddress } from '../../../../apis/contact';
-import toast from 'react-hot-toast';
-import ButtonGroup from '../components/Button';
+import SelectInput from "../components/Select";
+import Input from "../components/Input";
+import { BookingContext } from "../../../context/BookingContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { bookingApi, getAddress } from "../../../../apis/contact";
+import toast from "react-hot-toast";
+import ButtonGroup from "../components/Button";
 
 const Details = () => {
-  const { bookingDetails, setBookingDetails, setActiveStep } = useContext(BookingContext);
+  const { bookingDetails, setBookingDetails, setActiveStep } =
+    useContext(BookingContext);
   const navigate = useNavigate();
 
-  console.log("book", bookingDetails)
+  console.log("book", bookingDetails);
+  console.log(
+    "cleaningDays from details page:",
+    bookingDetails.cleaningDays[0]
+  );
 
-  const titleOptions = ['Mr', 'Mrs', 'Miss', 'MS', 'MX', 'Dr'];
-  const preferredContactOptions = ['Email', 'Phone'];
+  const titleOptions = ["Mr", "Mrs", "Miss", "MS", "MX", "Dr"];
+  const preferredContactOptions = ["Email", "Phone"];
   const [isManualEntry, setIsManualEntry] = useState(false);
 
   const { data: rawAddresses } = useQuery({
     queryKey: ["frequency"],
-    queryFn: getAddress
+    queryFn: getAddress,
   });
 
   // Map the backend response to an array of formatted addresses
-  const addressOptions = rawAddresses?.map((address) => address.formattedAddress) || [];
+  const addressOptions =
+    rawAddresses?.map((address) => address.formattedAddress) || [];
 
   // Update the bookingDetails context directly on change
   const handleChange = (name, value) => {
@@ -36,14 +42,14 @@ const Details = () => {
   };
 
   const { mutateAsync, isPending } = useMutation({
-    mutationKey: ['bookings'],
+    mutationKey: ["bookings"],
     mutationFn: bookingApi,
   });
 
   const [manualAddress, setManualAddress] = useState({
-    company: '',
-    street: '',
-    town: '',
+    company: "",
+    street: "",
+    town: "",
   });
 
   const handlemanualAddressChange = (e) => {
@@ -51,42 +57,32 @@ const Details = () => {
     setManualAddress((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Create the payload from bookingDetails context
-    const payload = {
-      frequency: bookingDetails.frequency,
-      hours: bookingDetails.hours,
-      date: bookingDetails.date,
-      cleaningDays: bookingDetails.cleaningDays,
-      interviewCleaner: bookingDetails.meetCleanerFirst,
-      parkingAvailability: bookingDetails.parkingAvailable,
-      ironing: bookingDetails.ironing,
-      pet: bookingDetails.pet,
-      houseAccess: bookingDetails.accessProperty,
-      comments: bookingDetails.comment,
-      referrer: bookingDetails.referral,
-      title: bookingDetails.title,
-      firstName: bookingDetails.firstName,
-      lastName: bookingDetails.lastName,
-      company: manualAddress.company,
-      street: manualAddress.street,
-      town: manualAddress.town,
-      postalCode:"NW95BZ",
-      mobileNumber: bookingDetails.mobileNumber,
-      landline: bookingDetails.landline,
-      emailAddress: bookingDetails.emailAddress,
-      contactMethod: bookingDetails.contactMethod,
-    };
+    const allFieldsFilled =
+      bookingDetails.title &&
+      bookingDetails.firstName &&
+      bookingDetails.lastName &&
+      (isManualEntry
+        ? manualAddress.company && manualAddress.street && manualAddress.town
+        : bookingDetails.company) &&
+      bookingDetails.mobileNumber &&
+      bookingDetails.landline &&
+      bookingDetails.emailAddress &&
+      bookingDetails.contactMethod;
 
-    try {
-      const response = await mutateAsync(payload);
-      toast.success(response.message || 'Booking confirmed successfully!');
+    if (allFieldsFilled) {
+      setBookingDetails({
+        ...bookingDetails,
+        company: isManualEntry ? manualAddress.company : bookingDetails.company,
+        street: isManualEntry ? manualAddress.street : bookingDetails.street,
+        town: isManualEntry ? manualAddress.town : bookingDetails.town,
+      });
       setActiveStep(4);
-      navigate('/appointment/complete');
-    } catch (error) {
-      toast.error(error.message || 'An error occurred while confirming the booking.');
+      navigate("/appointment/billing");
+    } else {
+      alert("Please fill all fields.");
     }
   };
 
@@ -99,8 +95,8 @@ const Details = () => {
           title="Your title"
           options={titleOptions}
           before_select="Title"
-          selected={bookingDetails.title || ''}
-          onChange={(e) => handleChange('title', e.target.value)}
+          selected={bookingDetails.title || ""}
+          onChange={(e) => handleChange("title", e.target.value)}
         />
 
         {/* First Name */}
@@ -109,8 +105,8 @@ const Details = () => {
           type="text"
           placeholder="First name"
           name="firstName"
-          value={bookingDetails.firstName || ''}
-          onChange={(e) => handleChange('firstName', e.target.value)}
+          value={bookingDetails.firstName || ""}
+          onChange={(e) => handleChange("firstName", e.target.value)}
         />
 
         {/* Last Name */}
@@ -119,8 +115,8 @@ const Details = () => {
           type="text"
           placeholder="Last name"
           name="lastName"
-          value={bookingDetails.lastName || ''}
-          onChange={(e) => handleChange('lastName', e.target.value)}
+          value={bookingDetails.lastName || ""}
+          onChange={(e) => handleChange("lastName", e.target.value)}
         />
         <div>
           {/* Conditional Rendering */}
@@ -143,7 +139,7 @@ const Details = () => {
                 type="text"
                 placeholder="Company"
                 name="company"
-                value={manualAddress.company || ''}
+                value={manualAddress.company || ""}
                 onChange={handlemanualAddressChange}
               />
 
@@ -152,7 +148,7 @@ const Details = () => {
                 type="text"
                 placeholder="Street"
                 name="street"
-                value={manualAddress.street || ''}
+                value={manualAddress.street || ""}
                 onChange={handlemanualAddressChange}
               />
 
@@ -161,7 +157,7 @@ const Details = () => {
                 type="text"
                 placeholder="Town"
                 name="town"
-                value={manualAddress.town || ''}
+                value={manualAddress.town || ""}
                 onChange={handlemanualAddressChange}
               />
 
@@ -173,7 +169,6 @@ const Details = () => {
                 value={"AA111AA"}
                 disabled={true}
               />
-
             </div>
           )}
 
@@ -183,7 +178,9 @@ const Details = () => {
             className="my-4 btn btn-secondary btn-lg"
             onClick={() => setIsManualEntry(!isManualEntry)}
           >
-            {isManualEntry ? "Select address from list" : "Enter address manually"}
+            {isManualEntry
+              ? "Select address from list"
+              : "Enter address manually"}
           </button>
         </div>
 
@@ -197,8 +194,8 @@ const Details = () => {
             name="mobileNumber"
             placeholder="Mobile number"
             type="text"
-            value={bookingDetails.mobileNumber || ''}
-            onChange={(e) => handleChange('mobileNumber', e.target.value)}
+            value={bookingDetails.mobileNumber || ""}
+            onChange={(e) => handleChange("mobileNumber", e.target.value)}
           />
 
           {/* Landline */}
@@ -207,8 +204,8 @@ const Details = () => {
             name="landline"
             placeholder="Landline number"
             type="text"
-            value={bookingDetails.landline || ''}
-            onChange={(e) => handleChange('landline', e.target.value)}
+            value={bookingDetails.landline || ""}
+            onChange={(e) => handleChange("landline", e.target.value)}
           />
 
           {/* Email Address */}
@@ -217,8 +214,8 @@ const Details = () => {
             name="emailAddress"
             placeholder="Email address"
             type="email"
-            value={bookingDetails.emailAddress || ''}
-            onChange={(e) => handleChange('emailAddress', e.target.value)}
+            value={bookingDetails.emailAddress || ""}
+            onChange={(e) => handleChange("emailAddress", e.target.value)}
           />
 
           {/* Preferred Contact Method */}
@@ -226,8 +223,8 @@ const Details = () => {
             title="Preferred Contact Method"
             options={preferredContactOptions}
             before_select="Your preferred contact method"
-            selected={bookingDetails.contactMethod || ''}
-            onChange={(e) => handleChange('contactMethod', e.target.value)}
+            selected={bookingDetails.contactMethod || ""}
+            onChange={(e) => handleChange("contactMethod", e.target.value)}
           />
         </div>
 
@@ -246,11 +243,11 @@ const Details = () => {
         <div className="my-5">
           <button
             type="submit"
-            style={{ fontSize: '18px' }}
+            style={{ fontSize: "18px" }}
             className="btn btn-primary btn-lg px-5 border-radius-1 border-none bg-primary text-white"
             disabled={isPending}
           >
-            {isPending ? 'Submitting...' : 'Confirm Booking'}
+            {isPending ? "Submitting..." : "Proceed to Payment"}
           </button>
         </div>
       </form>

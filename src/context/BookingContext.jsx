@@ -36,9 +36,11 @@ export const BookingProvider = ({ children }) => {
 
   // State to track the active step
   const [activeStep, setActiveStep] = useState(1);
+  //state to share agency fee across the page
+  const [agencyFee, setAgencyFee] = useState(null);
 
   return (
-    <BookingContext.Provider value={{ bookingDetails, setBookingDetails, activeStep, setActiveStep }}>
+    <BookingContext.Provider value={{ bookingDetails, setBookingDetails, activeStep, setActiveStep, agencyFee, setAgencyFee }}>
       {children}
     </BookingContext.Provider>
   );

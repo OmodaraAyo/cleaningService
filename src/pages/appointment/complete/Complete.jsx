@@ -1,6 +1,13 @@
 import React from 'react'
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BookingContext } from '../../../context/BookingContext';
 
 const Complete = () => {
+  const {bookingDetails,activeStep } = useContext(BookingContext);
+  const navigate  = useNavigate();
+
+
   return (
     <div>
       <h6>Phew your booking went through, Femi!</h6>

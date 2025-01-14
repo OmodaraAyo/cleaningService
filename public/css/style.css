@@ -225,7 +225,11 @@
   justify-content: center;
 }
 
-.cart__bottom form, .review__meta, .testimonial__content--top, .progressbararea li .title, .tags-section, .sidebar__totalamaunt .top, .sidebar__radiolist .form-check .formcheck, .sidebar__subtotal, .sidebar__relatedpost .body ul, .sidebar__commentForm form, .sidebar__comment .body ul li .content__top, .sidebar__categorie .body ul li, .mrcart__head, .header--two .header__bottom .area .main-menu, .header__bottom .area .menu, .header__bottom .area {
+.cart__bottom form, .review__meta, .testimonial__content--top, .progressbararea li .title, .tags-section, .sidebar__totalamaunt .top, .sidebar__radiolist .form-check .formcheck, .sidebar__subtotal, .sidebar__relatedpost .body ul, .sidebar__commentForm form, .sidebar__comment .body ul li .content__top, .sidebar__categorie .body ul li, .mrcart__head, .header--two .header__bottom .area .main-menu, .header__bottom .area .menu {
+  justify-content: space-between;
+}
+.header__bottom .area{
+  display: flex;
   justify-content: space-between;
 }
 
